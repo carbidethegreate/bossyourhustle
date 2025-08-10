@@ -9,7 +9,7 @@ accounts.
 - Front-end and back-end are equally important. User experience should always
   indicate background activity and surface clear error messages.
 - Uses the OnlyFans API and OpenAPI.
-- Initial setup includes a simple PHP login to prevent unauthorized access.
+- Initial setup includes a simple Node.js login to prevent unauthorized access.
 
 ## OnlyFans API Reference
 See [ONLYFANS_API.md](ONLYFANS_API.md) for a summary of how this project uses
@@ -27,7 +27,7 @@ OnlyFansAPI.com documentation before implementing calls.**
 ## Modules and Features
 | Module | Description |
 | ------ | ----------- |
-| Authentication | Simple PHP login to restrict access. |
+| Authentication | Node.js signup/login with SQLite and admin seeding. |
 
 _Add new modules to this table as the project expands._
 

@@ -1,0 +1,19 @@
+{
+  "name": "bossyourhustle",
+  "version": "1.0.0",
+  "description": "A multi-module platform for managing OnlyFans accounts. Each module interacts with the OnlyFans API and webhooks to help creators automate and monitor their accounts.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "express": "^5.1.0",
+    "express-session": "^1.18.2",
+    "sqlite3": "^5.1.7"
+  }
+}
