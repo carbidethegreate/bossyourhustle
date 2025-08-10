@@ -10,7 +10,6 @@ const PORT = process.env.PORT || 3000;
 init();
 
 app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
 app.use(session({
   secret: 'bossyourhustle-secret',
   resave: false,
@@ -65,37 +64,6 @@ app.get('/logout', requireAuth, (req, res) => {
   req.session.destroy(() => {
     res.redirect('/?message=Logged%20out');
   });
-});
-
-app.post('/send-message', requireAuth, async (req, res) => {
-  const { message, recipientId } = req.body;
-  if (!message || !recipientId) {
-    return res.status(400).json({ success: false, error: 'Missing fields' });
-  }
-  const apiKey = process.env.ONLYFANS_API_KEY;
-  if (!apiKey) {
-    return res.status(500).json({ success: false, error: 'API key not configured' });
-  }
-  try {
-    const response = await fetch('https://api.onlyfansapi.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${apiKey}`
-      },
-      body: JSON.stringify({ message, recipientId })
-    });
-    if (!response.ok) {
-      const errText = await response.text();
-      return res
-        .status(response.status)
-        .json({ success: false, error: errText });
-    }
-    const data = await response.json();
-    res.json({ success: true, data });
-  } catch (err) {
-    res.status(500).json({ success: false, error: 'Server error' });
-  }
 });
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
