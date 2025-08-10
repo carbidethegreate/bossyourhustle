@@ -11,6 +11,11 @@ accounts.
 - Uses the OnlyFans API and OpenAPI.
 - Initial setup includes a simple PHP login to prevent unauthorized access.
 
+## OnlyFans API Reference
+See [ONLYFANS_API.md](ONLYFANS_API.md) for a summary of how this project uses
+OnlyFansAPI.com. **Always verify endpoint details with the official
+OnlyFansAPI.com documentation before implementing calls.**
+
 ## Environment
 - **Domain:** [bossyourhustle.com](http://bossyourhustle.com)
 - **Server:** Plesk with Cloudflare tunnel and DNS.
