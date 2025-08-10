@@ -9,7 +9,7 @@ accounts.
 - Front-end and back-end are equally important. User experience should always
   indicate background activity and surface clear error messages.
 - Uses the OnlyFans API and OpenAPI.
-- Initial setup includes a simple PHP login to prevent unauthorized access.
+- Initial setup includes a simple Node.js login to prevent unauthorized access.
 
 ## Environment
 - **Domain:** [bossyourhustle.com](http://bossyourhustle.com)
@@ -22,7 +22,7 @@ accounts.
 ## Modules and Features
 | Module | Description |
 | ------ | ----------- |
-| Authentication | Simple PHP login to restrict access. |
+| Authentication | Node.js signup/login with SQLite and admin seeding. |
 
 _Add new modules to this table as the project expands._
 
