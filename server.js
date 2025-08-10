@@ -1,6 +1,7 @@
 const express = require('express');
 const session = require('express-session');
 const bcrypt = require('bcrypt');
+const path = require('path');
 const { db, init } = require('./db');
 
 const app = express();
@@ -14,7 +15,6 @@ app.use(session({
   resave: false,
   saveUninitialized: false
 }));
-app.use(express.static('public'));
 
 const requireAuth = (req, res, next) => {
   if (!req.session.user) {
@@ -23,23 +23,15 @@ const requireAuth = (req, res, next) => {
   next();
 };
 
-app.get('/', (req, res) => {
-  const user = req.session.user;
-  const message = req.query.message || '';
-  res.send(`<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8" />
-<title>Boss Your Hustle OF Tool Box</title>
-<link rel="stylesheet" href="/style.css" />
-</head>
-<body>
-<h1>Boss Your Hustle OF Tool Box</h1>
-${user ? `<p>Welcome, ${user.username}!</p><a href="/logout">Logout</a>` : `<a href="/signup.html">Sign Up</a> | <a href="/login.html">Login</a>`}
-<p class="message">${message}</p>
-</body>
-</html>`);
+app.get(['/', '/index.html'], requireAuth, (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
+
+app.get('/session', (req, res) => {
+  res.json({ user: req.session.user || null });
+});
+
+app.use(express.static('public'));
 
 app.post('/signup', (req, res) => {
   const { username, password } = req.body;

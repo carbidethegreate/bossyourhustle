@@ -28,6 +28,7 @@ OnlyFansAPI.com documentation before implementing calls.**
 | Module | Description |
 | ------ | ----------- |
 | Authentication | Node.js signup/login with SQLite and admin seeding. |
+| Landing Page | Authenticated index with themed UI and session status. |
 
 _Add new modules to this table as the project expands._
 
