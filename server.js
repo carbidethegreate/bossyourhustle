@@ -1,101 +1,92 @@
+/*
+ * HTTP server for BossYourHustle using Express.
+ *
+ * This version uses MariaDB for persistence via the db.js module.  It provides
+ * a simple login form that authenticates against the `users` table, stores
+ * session information in memory and protects the index page from anonymous
+ * access.  Static assets are served from the `public` directory.
+ */
+
 const express = require('express');
 const session = require('express-session');
 const bcrypt = require('bcrypt');
 const path = require('path');
-const { db, init } = require('./db');
+const { pool, init } = require('./db');
 
-const app = express();
-const PORT = process.env.PORT || 3000;
+require('dotenv').config();
 
+// Initialise database and seed admin user if necessary
 init();
 
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-app.use(session({
-  secret: 'bossyourhustle-secret',
-  resave: false,
-  saveUninitialized: false
-}));
+const app = express();
+const port = process.env.PORT || 3000;
 
-const requireAuth = (req, res, next) => {
-  if (!req.session.user) {
-    return res.redirect('/login.html?error=Please%20login');
+app.use(express.urlencoded({ extended: true }));
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || 'change_this_secret',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false },
+  }),
+);
+
+// Middleware to protect routes that require authentication
+function requireAuth(req, res, next) {
+  if (!req.session.userId) {
+    return res.redirect('/login.html');
   }
   next();
-};
+}
 
-app.get(['/', '/index.html'], requireAuth, (req, res) => {
+// Serve files from the public directory relative to this file
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Home page is protected
+app.get('/', requireAuth, (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+// API to expose the current session username (used by front end)
 app.get('/session', (req, res) => {
-  res.json({ user: req.session.user || null });
+  res.json({ username: req.session.username || null });
 });
 
-app.use(express.static('public'));
-
-app.post('/signup', (req, res) => {
+// Handle login form submission
+app.post('/login', async (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) {
-    return res.redirect('/signup.html?error=Missing%20fields');
-  }
-  db.get('SELECT * FROM users WHERE username = ?', username, async (err, row) => {
-    if (err) return res.redirect('/signup.html?error=Server%20error');
-    if (row) return res.redirect('/signup.html?error=User%20exists');
-    const hash = await bcrypt.hash(password, 10);
-    db.run('INSERT INTO users (username, passwordHash) VALUES (?, ?)', username, hash, (err2) => {
-      if (err2) return res.redirect('/signup.html?error=Server%20error');
-      res.redirect('/login.html?success=Account%20created');
-    });
-  });
-});
-
-app.post('/login', (req, res) => {
-  const { username, password } = req.body;
-  db.get('SELECT * FROM users WHERE username = ?', username, async (err, user) => {
-    if (err || !user) return res.redirect('/login.html?error=Invalid%20credentials');
-    const match = await bcrypt.compare(password, user.passwordHash);
-    if (!match) return res.redirect('/login.html?error=Invalid%20credentials');
-    req.session.user = { id: user.id, username: user.username };
-    res.redirect('/?message=Logged%20in');
-  });
-});
-
-app.get('/logout', requireAuth, (req, res) => {
-  req.session.destroy(() => {
-    res.redirect('/?message=Logged%20out');
-  });
-});
-
-app.post('/send-message', requireAuth, async (req, res) => {
-  const { message, recipientId } = req.body;
-  if (!message || !recipientId) {
-    return res.status(400).json({ success: false, error: 'Missing fields' });
-  }
-  const apiKey = process.env.ONLYFANS_API_KEY;
-  if (!apiKey) {
-    return res.status(500).json({ success: false, error: 'API key not configured' });
+    return res.redirect('/login.html?error=Invalid+credentials');
   }
   try {
-    const response = await fetch('https://api.onlyfansapi.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${apiKey}`
-      },
-      body: JSON.stringify({ message, recipientId })
-    });
-    if (!response.ok) {
-      const errText = await response.text();
-      return res
-        .status(response.status)
-        .json({ success: false, error: errText });
+    const conn = await pool.getConnection();
+    const [rows] = await conn.query('SELECT id, username, password_hash FROM users WHERE username = ?', [username]);
+    conn.release();
+    if (rows.length === 0) {
+      return res.redirect('/login.html?error=Invalid+credentials');
     }
-    const data = await response.json();
-    res.json({ success: true, data });
+    const user = rows[0];
+    const match = await bcrypt.compare(password, user.password_hash);
+    if (!match) {
+      return res.redirect('/login.html?error=Invalid+credentials');
+    }
+    req.session.userId = user.id;
+    req.session.username = user.username;
+    res.redirect('/');
   } catch (err) {
-    res.status(500).json({ success: false, error: 'Server error' });
+    console.error('Error during login:', err);
+    res.redirect('/login.html?error=Server+error');
   }
 });
 
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// Log out route clears the session
+app.get('/logout', requireAuth, (req, res) => {
+  req.session.destroy(() => {
+    res.redirect('/login.html?success=Logged+out');
+  });
+});
+
+// Start the server
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});
