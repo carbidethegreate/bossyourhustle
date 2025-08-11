@@ -1,32 +1,37 @@
-const sqlite3 = require('sqlite3').verbose();
+const mysql = require('mysql2/promise');
 const bcrypt = require('bcrypt');
+require('dotenv').config();
 
-const DB_FILE = './database.sqlite';
-const db = new sqlite3.Database(DB_FILE);
+const pool = mysql.createPool({
+  host: process.env.DB_HOST || 'localhost',
+  port: process.env.DB_PORT || 3306,
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASS || '',
+  database: process.env.DB_NAME || 'byhdb_',
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
+});
 
-const init = () => {
-  db.serialize(() => {
-    db.run(`CREATE TABLE IF NOT EXISTS users (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      username TEXT UNIQUE,
-      passwordHash TEXT
+async function init() {
+  const conn = await pool.getConnection();
+  try {
+    await conn.query(`CREATE TABLE IF NOT EXISTS users (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      username VARCHAR(255) UNIQUE,
+      passwordHash VARCHAR(255)
     )`);
+    const [rows] = await conn.query('SELECT * FROM users WHERE username = ?', [process.env.ADMIN_USER || 'admin']);
+    if (rows.length === 0) {
+      const hash = await bcrypt.hash(process.env.ADMIN_PASS || 'changeme', 12);
+      await conn.query('INSERT INTO users (username, passwordHash) VALUES (?, ?)', [process.env.ADMIN_USER || 'admin', hash]);
+      console.log('Admin user seeded');
+    }
+  } catch (err) {
+    console.error(err);
+  } finally {
+    conn.release();
+  }
+}
 
-    const adminUser = 'carbide';
-    const adminPass = 'Momida@1975';
-    const stmt = db.prepare('SELECT * FROM users WHERE username = ?');
-    stmt.get(adminUser, async (err, row) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
-      if (!row) {
-        const hash = await bcrypt.hash(adminPass, 10);
-        db.run('INSERT INTO users (username, passwordHash) VALUES (?, ?)', adminUser, hash);
-        console.log('Admin user created');
-      }
-    });
-  });
-};
-
-module.exports = { db, init };
+module.exports = { pool, init };
