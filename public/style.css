@@ -1,19 +1,37 @@
 body {
-  background-color: #000;
-  color: #fff;
+  background-color: #111;
+  color: #eee;
   font-family: Arial, sans-serif;
   text-align: center;
+  margin: 2rem;
 }
-a {
-  color: #ff66b3;
-}
+
 input, button {
-  padding: 0.5rem;
+  padding: 0.5rem 1rem;
   margin: 0.5rem;
-  border: 1px solid #888;
+  border: 1px solid #555;
   background: #222;
   color: #fff;
 }
+
+a {
+  color: #ff66b3;
+}
+
 .message {
   color: #ff66b3;
+  margin-top: 1rem;
+}
+
+.container {
+  background-color: #1a1a1a;
+  padding: 2rem;
+  max-width: 500px;
+  margin: 10vh auto;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(255, 102, 179, 0.3);
+}
+
+h1 {
+  margin-top: 0;
 }
