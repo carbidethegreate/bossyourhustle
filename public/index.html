@@ -1,30 +1,49 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <title>Boss Your Hustle OF Tool Box</title>
-  <link rel="stylesheet" href="/style.css" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Boss Your Hustle</title>
+  <link rel="stylesheet" href="/style.css">
+  <style>
+    .hero {
+      max-width: 600px;
+      margin: 10vh auto;
+      padding: 2rem;
+      background: #1a1a1a;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(255, 102, 179, 0.3);
+    }
+    .hero h1 {
+      margin: 0 0 1rem;
+      color: #ff66b3;
+    }
+    .hero p {
+      margin: 0 0 1.5rem;
+      color: #ccc;
+      font-size: 1.1rem;
+      line-height: 1.6;
+    }
+    .hero .button {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      border-radius: 4px;
+      text-decoration: none;
+      color: #fff;
+      background: #ff66b3;
+      transition: background 0.3s ease;
+    }
+    .hero .button:hover {
+      background: #e0559c;
+    }
+  </style>
 </head>
 <body>
-  <h1>Boss Your Hustle OF Tool Box</h1>
-  <p id="welcome"></p>
-  <p class="message" id="msg"></p>
-  <a href="/logout">Logout</a>
-  <script>
-    fetch('/session')
-      .then(res => res.json())
-      .then(data => {
-        if (data.user) {
-          document.getElementById('welcome').textContent = `Welcome, ${data.user.username}!`;
-        }
-      })
-      .catch(() => {
-        document.getElementById('msg').textContent = 'Error loading session';
-      });
-
-    const params = new URLSearchParams(window.location.search);
-    const message = params.get('message');
-    if (message) document.getElementById('msg').textContent = message;
-  </script>
+  <div class="hero">
+    <h1>Boss Your Hustle</h1>
+    <p>Welcome to our platform, currently under construction. We’re working hard behind the scenes to bring you something amazing.</p>
+    <p>Stay tuned for updates. If you are an authorised user, please log in to continue.</p>
+    <a class="button" href="/login.html">Login</a>
+  </div>
 </body>
 </html>
