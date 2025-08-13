@@ -1,20 +1,16 @@
 {
   "name": "bossyourhustle",
   "version": "1.0.0",
-  "description": "BossYourHustle platform initial setup with protected login and MariaDB backend",
+  "description": "BossYourHustle login and onboarding",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
   "dependencies": {
     "bcrypt": "^6.0.0",
-    "express": "^4.18.2",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
     "express-session": "^1.18.2",
-    "mysql2": "^3.6.0",
-    "dotenv": "^16.0.3"
+    "mysql2": "^3.11.0"
   }
 }

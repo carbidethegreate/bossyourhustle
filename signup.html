@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Sign Up - Boss Your Hustle</title>
+  <title>Sign Up – Boss Your Hustle</title>
   <link rel="stylesheet" href="/style.css">
 </head>
 <body>
@@ -19,13 +19,14 @@
       <button type="submit">Create account</button>
     </form>
     <p class="message" id="msg"></p>
-    <p><a href="/login.html">Already have an account, log in</a></p>
+    <p><a href="/login.html">Already have an account? Log in</a></p>
   </div>
   <script>
-    const p = new URLSearchParams(location.search);
-    const e = p.get('error'); const s = p.get('success');
-    if (e) document.getElementById('msg').textContent = e;
-    if (s) document.getElementById('msg').textContent = s;
+    const params = new URLSearchParams(window.location.search);
+    const error = params.get('error');
+    const success = params.get('success');
+    if (error) document.getElementById('msg').textContent = error;
+    if (success) document.getElementById('msg').textContent = success;
   </script>
 </body>
 </html>

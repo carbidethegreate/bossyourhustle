@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Boss Your Hustle</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Boss Your Hustle</h1>
+    <p class="message">Welcome, <span id="username"></span>! This platform is under development.</p>
+    <p>Stay tuned for upcoming features and updates.</p>
+    <a href="/logout">Log out</a>
+  </div>
+  <script>
+    fetch('/session')
+  .then(res => res.json())
+  .then(data => {
+    if (data.username) {
+      document.getElementById('username').textContent = data.username;
+    }
+  });script>
+</body>
+</html>

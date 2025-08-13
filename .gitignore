@@ -1,20 +1,3 @@
-# Node
-node_modules/
-npm-debug.log*
-yarn.lock
-pnpm-lock.yaml
-
-# Env & runtime
-.env
-.env.*
-!.env.example
+node_modules
 *.sqlite
-*.log
-pids/
-coverage/
-dist/
-build/
-
-# Plesk artifacts
-*.zip
-*.tar
+npm-debug.log

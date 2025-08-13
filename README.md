@@ -23,7 +23,6 @@ OnlyFansAPI.com documentation before implementing calls.**
 - **PHP:** 8.2.29 (FPM/FastCGI)
 - **Database:** `byhdb_` on `localhost:3306` with user `carbide` (password
   managed outside the repo).
-- Copy `.env.example` to `.env` and replace placeholders with real values.
 
 ## Modules and Features
 | Module | Description |

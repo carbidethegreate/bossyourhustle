@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Setup API Keys – Boss Your Hustle</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Set up your creator account</h1>
+    <form action="/setup-keys" method="post">
+      <input type="text" name="accountName" placeholder="Account name" required>
+      <h3>Option A — OnlyFans login</h3>
+      <input type="email" name="onlyfansEmail" placeholder="OnlyFans email">
+      <input type="password" name="onlyfansPassword" placeholder="OnlyFans password">
+      <h3>Option B — OnlyFans API key</h3>
+      <input type="text" name="onlyfansApiKey" placeholder="OnlyFans API key">
+      <h3>OpenAI</h3>
+      <input type="text" name="openaiApiKey" placeholder="OpenAI API key">
+      <button type="submit">Save</button>
+    </form>
+    <p class="message" id="msg"></p>
+    <p>Provide Option A or Option B, either is fine.</p>
+  </div>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const error = params.get('error');
+    const success = params.get('success');
+    if (error) document.getElementById('msg').textContent = error;
+    if (success) document.getElementById('msg').textContent = success;
+  </script>
+</body>
+</html>
